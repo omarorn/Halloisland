@@ -1,0 +1,41 @@
+# Environment variables and secrets
+.env
+*/.env
+**/.env
+
+# Local development configurations
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Python virtual environment
+venv/
+env/
+ENV/
+.venv/
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# Build outputs
+dist/
+build/
+*.pyc
+__pycache__/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo

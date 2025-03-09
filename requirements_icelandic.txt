@@ -1,0 +1,18 @@
+# For environment and utils
+python-dotenv
+requests
+
+# For Google Cloud
+google-cloud-texttospeech
+google-cloud-speech
+
+# For Azure
+azure-cognitiveservices-speech
+
+# For OpenAI
+openai
+
+# For local Whisper model
+torch --index-url https://download.pytorch.org/whl/cpu
+transformers
+librosa
