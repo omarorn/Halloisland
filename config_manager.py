@@ -22,11 +22,21 @@ class ConfigManager:
         self.config = self.load_config()
 
     def load_config(self) -> Dict[str, Any]:
-        """Load configuration from file or create default"""
+        """Load configuration from environment and config file"""
+        # Load environment variables first
+        env_config = {
+            "openai_key": os.environ.get("OPENAI_API_KEY"),
+            "elevenlabs_key": os.environ.get("ELEVENLABS_API_KEY"),
+            "azure_key": os.environ.get("AZURE_SPEECH_KEY")
+        }
+        
+        # Merge with file config if exists
         if self.config_path.exists():
             with open(self.config_path, 'r') as f:
-                return json.load(f)
-        return self.create_default_config()
+                file_config = json.load(f)
+                return {**file_config, **env_config}
+                
+        return {**self.defaults, **env_config}
 
     def create_default_config(self) -> Dict[str, Any]:
         """Create default config file"""
