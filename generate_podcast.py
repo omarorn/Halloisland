@@ -8,10 +8,12 @@ import re
 from pathlib import Path
 import argparse
 
-# Constants
-PODCAST_SCRIPT = Path("/home/azureuser/helloiceland/texttovoice/podcasttest.md")
-OUTPUT_DIR = Path("podcast_demo")
-OUTPUT_DIR.mkdir(exist_ok=True)
+from config_manager import ConfigManager
+
+# Initialize configuration
+config = ConfigManager()
+OUTPUT_DIR = config.output_dir
+OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 def extract_speaking_parts(markdown_text):
     """Extract speaking parts from markdown script"""
@@ -92,23 +94,21 @@ def test_openai_tts(text, output_file, api_key, voice="alloy"):
 def main():
     """Main function"""
     parser = argparse.ArgumentParser(description="Generate Icelandic podcast demo")
-    parser.add_argument("--openai-key", help="OpenAI API key")
-    parser.add_argument("--segment", type=int, help="Generate specific segment only (1-3, 0 for intro, 4 for outro)")
-    parser.add_argument("--kynnir-voice", default="echo", help="Voice for the presenter (kynnir)")
-    parser.add_argument("--gestur-voice", default="onyx", help="Voice for the guest (gestur)")
+    parser.add_argument("--segment", type=int,
+                        help="Generate specific segment only (0-4 where 0=intro, 4=outro)")
     
     args = parser.parse_args()
     
-    # Get OpenAI API key
-    api_key = args.openai_key or os.environ.get("OPENAI_API_KEY")
+    # Get API key from config
+    api_key = config.get("openai_key") or os.environ.get("OPENAI_API_KEY")
     if not api_key:
-        print("Error: No OpenAI API key provided")
-        print("Please provide a key with --openai-key or set the OPENAI_API_KEY environment variable")
+        print("Error: No OpenAI API key configured")
+        print("Set PODCAST_OPENAI_KEY environment variable or add to config.json")
         return
     
     # Read podcast script
-    if not PODCAST_SCRIPT.exists():
-        print(f"Error: Podcast script not found at {PODCAST_SCRIPT}")
+    if not config.podcast_script.exists():
+        print(f"Error: Podcast script not found at {config.podcast_script}")
         return
     
     with open(PODCAST_SCRIPT, 'r', encoding='utf-8') as f:
