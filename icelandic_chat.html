@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Íslenskur Spjallrobot</title>
+    <style>
+        :root {
+            --primary-color: #005bbb; /* Icelandic flag blue */
+            --accent-color: #d72828; /* Icelandic flag red */
+            --light-color: #f5f5f5;
+            --dark-color: #333;
+            --border-radius: 12px;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+        
+        header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .iceland-flag {
+            width: 40px;
+            margin-right: 15px;
+        }
+        
+        h1 {
+            margin: 0;
+            color: var(--primary-color);
+        }
+        
+        #chat-container {
+            height: 500px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            background-color: white;
+            overflow-y: scroll;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        #controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        #message-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        
+        .button-row {
+            display: flex;
+            gap: 10px;
+        }
+        
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.2s;
+            flex: 1;
+        }
+        
+        #send-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        #voice-btn {
+            background-color: var(--accent-color);
+            color: white;
+            position: relative;
+        }
+        
+        #voice-btn.recording::after {
+            content: "";
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 10px;
+            height: 10px;
+            background-color: red;
+            border-radius: 50%;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        button:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .message {
+            margin: 10px 0;
+            padding: 12px 16px;
+            border-radius: var(--border-radius);
+            max-width: 80%;
+            word-wrap: break-word;
+            position: relative;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .user-message {
+            background-color: #e1f5fe;
+            color: #0277bd;
+            margin-left: auto;
+            border-bottom-right-radius: 0;
+        }
+        
+        .bot-message {
+            background-color: #f1f1f1;
+            color: #333;
+            margin-right: auto;
+            border-bottom-left-radius: 0;
+        }
+        
+        .message.thinking {
+            background-color: #f1f1f1;
+            color: #666;
+            margin-right: auto;
+            border-bottom-left-radius: 0;
+        }
+        
+        .thinking-dots {
+            display: inline-block;
+        }
+        
+        .thinking-dots span {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            background-color: #666;
+            border-radius: 50%;
+            margin-right: 3px;
+            animation: thinking 1.4s infinite;
+        }
+        
+        .thinking-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        
+        .thinking-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes thinking {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-5px); }
+        }
+        
+        .voice-indicator {
+            display: inline-block;
+            margin-right: 10px;
+            color: #0277bd;
+        }
+        
+        .settings-panel {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            padding: 15px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .settings-panel.active {
+            display: block;
+        }
+        
+        .settings-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        select, input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        #settings-btn {
+            background-color: #f0f0f0;
+            color: #333;
+            padding: 8px;
+            font-size: 14px;
+            position: absolute;
+            top: 20px;
+            right: 20px;
+        }
+        
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            
+            #chat-container {
+                height: 400px;
+            }
+            
+            .message {
+                max-width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <svg class="iceland-flag" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480">
+            <defs>
+                <clipPath id="a">
+                    <path fill-opacity=".7" d="M0 0h640v480H0z"/>
+                </clipPath>
+            </defs>
+            <g clip-path="url(#a)">
+                <path fill="#003897" d="M0 0h666.7v480H0z"/>
+                <path fill="#fff" d="M0 186.7h186.7V0h106.6v186.7h373.4v106.6H293.3V480H186.7V293.3H0V186.7z"/>
+                <path fill="#d72828" d="M0 213.3h213.3V0h53.4v213.3h400v53.4h-400V480h-53.4V266.7H0v-53.4z"/>
+            </g>
+        </svg>
+        <h1>Íslenskur Spjallrobot</h1>
+    </header>
+    
+    <button id="settings-btn">⚙️ Stillingar</button>
+    
+    <div id="chat-container"></div>
+    
+    <div id="controls">
+        <input type="text" id="message-input" placeholder="Skrifaðu skilaboð..." autofocus>
+        <div class="button-row">
+            <button id="send-btn">Senda</button>
+            <button id="voice-btn">🎤 Tala</button>
+        </div>
+    </div>
+    
+    <div id="settings-panel" class="settings-panel">
+        <div class="settings-header">
+            <h3>Stillingar</h3>
+            <button id="close-settings">✕</button>
+        </div>
+        
+        <div class="form-group">
+            <label for="openai-key">OpenAI API lykill:</label>
+            <input type="text" id="openai-key" placeholder="sk-...">
+        </div>
+        
+        <div class="form-group">
+            <label for="tts-voice">TTS rödd:</label>
+            <select id="tts-voice">
+                <option value="0">Rödd 1</option>
+                <option value="1" selected>Rödd 2</option>
+                <option value="2">Rödd 3</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="tts-rate">TTS hraði:</label>
+            <input type="number" id="tts-rate" min="50" max="150" value="80">
+        </div>
+        
+        <div class="form-group">
+            <label for="output-format">Úttakssnið:</label>
+            <select id="output-format">
+                <option value="text">Aðeins texti</option>
+                <option value="audio" selected>Texti og hljóð</option>
+                <option value="audio-only">Aðeins hljóð</option>
+            </select>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Knúið af OpenAI Whisper og Íslenskt TTS | © 2025</p>
+    </footer>
+
+    <script>
+        // DOM Elements
+        const chatContainer = document.getElementById('chat-container');
+        const messageInput = document.getElementById('message-input');
+        const sendBtn = document.getElementById('send-btn');
+        const voiceBtn = document.getElementById('voice-btn');
+        const settingsBtn = document.getElementById('settings-btn');
+        const closeSettingsBtn = document.getElementById('close-settings');
+        const settingsPanel = document.getElementById('settings-panel');
+        
+        // Settings fields
+        const openaiKeyInput = document.getElementById('openai-key');
+        const ttsVoiceSelect = document.getElementById('tts-voice');
+        const ttsRateInput = document.getElementById('tts-rate');
+        const outputFormatSelect = document.getElementById('output-format');
+        
+        // API Endpoints - update these with your actual endpoints
+        const WHISPER_API_ENDPOINT = 'http://localhost:5000/api/transcribe';
+        const TTS_API_ENDPOINT = 'http://localhost:5001/api/synthesize';
+        
+        // Save settings to localStorage
+        function saveSettings() {
+            const settings = {
+                openaiKey: openaiKeyInput.value,
+                ttsVoice: ttsVoiceSelect.value,
+                ttsRate: ttsRateInput.value,
+                outputFormat: outputFormatSelect.value
+            };
+            localStorage.setItem('icelandicChatSettings', JSON.stringify(settings));
+        }
+        
+        // Load settings from localStorage
+        function loadSettings() {
+            const settings = JSON.parse(localStorage.getItem('icelandicChatSettings') || '{}');
+            openaiKeyInput.value = settings.openaiKey || '';
+            ttsVoiceSelect.value = settings.ttsVoice || '1';
+            ttsRateInput.value = settings.ttsRate || '80';
+            outputFormatSelect.value = settings.outputFormat || 'audio';
+        }
+        
+        // Initialize recording variables
+        let isRecording = false;
+        let mediaRecorder;
+        let audioChunks = [];
+        
+        // Add a message to the chat
+        function addMessage(text, sender, options = {}) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            
+            if (options.isVoice && sender === 'user') {
+                const voiceIndicator = document.createElement('span');
+                voiceIndicator.className = 'voice-indicator';
+                voiceIndicator.textContent = '🎤 ';
+                messageDiv.appendChild(voiceIndicator);
+            }
+            
+            const textSpan = document.createElement('span');
+            textSpan.textContent = text;
+            messageDiv.appendChild(textSpan);
+            
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            
+            return messageDiv;
+        }
+        
+        // Add a thinking animation
+        function addThinkingAnimation() {
+            const thinkingDiv = document.createElement('div');
+            thinkingDiv.className = 'message thinking';
+            
+            const dotsContainer = document.createElement('div');
+            dotsContainer.className = 'thinking-dots';
+            
+            for (let i = 0; i < 3; i++) {
+                const dot = document.createElement('span');
+                dotsContainer.appendChild(dot);
+            }
+            
+            thinkingDiv.appendChild(dotsContainer);
+            chatContainer.appendChild(thinkingDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            
+            return thinkingDiv;
+        }
+        
+        // Send text message
+        async function sendTextMessage(text) {
+            if (!text.trim()) return;
+            
+            // Add user message to chat
+            addMessage(text, 'user');
+            
+            // Clear input
+            messageInput.value = '';
+            
+            // Add thinking animation
+            const thinkingDiv = addThinkingAnimation();
+            
+            // Get settings
+            const settings = JSON.parse(localStorage.getItem('icelandicChatSettings') || '{}');
+            
+            try {
+                // Get response from server
+                const response = await fetch('/webhook/icelandic-chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        messageType: 'text',
+                        text: text,
+                        outputFormat: settings.outputFormat || 'audio',
+                        openaiKey: settings.openaiKey
+                    })
+                });
+                
+                // Remove thinking animation
+                chatContainer.removeChild(thinkingDiv);
+                
+                if (!response.ok) {
+                    throw new Error(`Server responded with status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                
+                // Add bot message to chat
+                addMessage(result.text, 'bot');
+                
+                // Play audio if available
+                if (result.audio && settings.outputFormat !== 'text') {
+                    playAudio(result.audio);
+                }
+            } catch (error) {
+                // Remove thinking animation
+                chatContainer.removeChild(thinkingDiv);
+                
+                // Show error message
+                console.error('Error:', error);
+                addMessage(`Villa kom upp: ${error.message}`, 'bot');
+            }
+        }
+        
+        // Start recording audio
+        async function startRecording() {
+            if (isRecording) return;
+            
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+                
+                mediaRecorder.addEventListener('dataavailable', event => {
+                    audioChunks.push(event.data);
+                });
+                
+                mediaRecorder.start();
+                isRecording = true;
+                voiceBtn.textContent = '🔴 Taka upp...';
+                voiceBtn.classList.add('recording');
+            } catch (error) {
+                console.error('Error accessing microphone:', error);
+                alert('Ekki tókst að fá aðgang að hljóðnema');
+            }
+        }
+        
+        // Stop recording and process audio
+        async function stopRecording() {
+            if (!isRecording) return;
+            
+            mediaRecorder.stop();
+            isRecording = false;
+            voiceBtn.textContent = '🎤 Tala';
+            voiceBtn.classList.remove('recording');
+            
+            // Wait for data to be available
+            await new Promise(resolve => {
+                mediaRecorder.addEventListener('stop', resolve);
+            });
+            
+            // Add user message to chat
+            const messageDiv = addMessage('Sent hljóðskilaboð...', 'user', { isVoice: true });
+            
+            // Add thinking animation
+            const thinkingDiv = addThinkingAnimation();
+            
+            // Convert audio to base64
+            const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+            const reader = new FileReader();
+            
+            reader.readAsDataURL(audioBlob);
+            reader.onloadend = async () => {
+                const base64Audio = reader.result.split(',')[1]; // Remove data URL prefix
+                
+                // Get settings
+                const settings = JSON.parse(localStorage.getItem('icelandicChatSettings') || '{}');
+                
+                try {
+                    // First, transcribe audio using Whisper API
+                    const transcribeResponse = await fetch(WHISPER_API_ENDPOINT, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            audio: base64Audio,
+                            api_key: settings.openaiKey
+                        })
+                    });
+                    
+                    if (!transcribeResponse.ok) {
+                        throw new Error(`Whisper API responded with status: ${transcribeResponse.status}`);
+                    }
+                    
+                    const transcribeResult = await transcribeResponse.json();
+                    const transcribedText = transcribeResult.text;
+                    
+                    // Update user message with transcribed text
+                    messageDiv.querySelector('span:not(.voice-indicator)').textContent = transcribedText;
+                    
+                    // Get bot response
+                    const botResponse = await fetch('/webhook/icelandic-chat', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            messageType: 'text',
+                            text: transcribedText,
+                            outputFormat: settings.outputFormat || 'audio',
+                            openaiKey: settings.openaiKey
+                        })
+                    });
+                    
+                    // Remove thinking animation
+                    chatContainer.removeChild(thinkingDiv);
+                    
+                    if (!botResponse.ok) {
+                        throw new Error(`Server responded with status: ${botResponse.status}`);
+                    }
+                    
+                    const result = await botResponse.json();
+                    
+                    // Add bot message to chat
+                    addMessage(result.text, 'bot');
+                    
+                    // Play audio if available
+                    if (result.audio && settings.outputFormat !== 'text') {
+                        playAudio(result.audio);
+                    }
+                } catch (error) {
+                    // Remove thinking animation
+                    chatContainer.removeChild(thinkingDiv);
+                    
+                    // Show error message
+                    console.error('Error:', error);
+                    addMessage(`Villa kom upp: ${error.message}`, 'bot');
+                }
+            };
+        }
+        
+        // Play audio from base64
+        function playAudio(base64Audio) {
+            const audio = new Audio(`data:audio/mp3;base64,${base64Audio}`);
+            audio.play();
+        }
+        
+        // Event listeners
+        sendBtn.addEventListener('click', () => {
+            sendTextMessage(messageInput.value);
+        });
+        
+        messageInput.addEventListener('keypress', event => {
+            if (event.key === 'Enter') {
+                sendTextMessage(messageInput.value);
+            }
+        });
+        
+        voiceBtn.addEventListener('mousedown', startRecording);
+        voiceBtn.addEventListener('touchstart', startRecording);
+        
+        voiceBtn.addEventListener('mouseup', stopRecording);
+        voiceBtn.addEventListener('touchend', stopRecording);
+        
+        // Settings panel
+        settingsBtn.addEventListener('click', () => {
+            settingsPanel.classList.toggle('active');
+        });
+        
+        closeSettingsBtn.addEventListener('click', () => {
+            settingsPanel.classList.remove('active');
+            saveSettings();
+        });
+        
+        // Settings fields
+        [openaiKeyInput, ttsVoiceSelect, ttsRateInput, outputFormatSelect].forEach(element => {
+            element.addEventListener('change', saveSettings);
+        });
+        
+        // Load settings on page load
+        document.addEventListener('DOMContentLoaded', loadSettings);
+        
+        // Welcome message
+        setTimeout(() => {
+            addMessage('Hæ! Ég er Íslenskur Spjallrobot. Hvernig get ég aðstoðað þig í dag?', 'bot');
+        }, 500);
+    </script>
+</body>
+</html>
