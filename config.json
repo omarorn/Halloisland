@@ -1,0 +1,13 @@
+{
+  "podcast_script": "podcast_script.md",
+  "output_dir": "podcast_output",
+  "tts_provider": "openai",
+  "voices": {
+    "kynnir": "echo",
+    "gestur": "onyx"
+  },
+  "audio_settings": {
+    "sample_rate": 44100,
+    "bit_depth": 256
+  }
+}

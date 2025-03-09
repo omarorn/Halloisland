@@ -51,45 +51,7 @@ def extract_speaking_parts(markdown_text):
     
     return segments
 
-def test_openai_tts(text, output_file, api_key, voice="alloy"):
-    """Generate TTS using OpenAI API"""
-    try:
-        import openai
-        
-        # Set API key
-        os.environ["OPENAI_API_KEY"] = api_key
-        client = openai.OpenAI()
-        
-        print(f"Generating TTS for text ({len(text)} chars)...")
-        start_time = time.time()
-        
-        # Generate speech
-        response = client.audio.speech.create(
-            model="tts-1",
-            voice=voice,
-            input=text
-        )
-        
-        # Save to file
-        response.stream_to_file(str(output_file))
-        
-        elapsed_time = time.time() - start_time
-        
-        if output_file.exists():
-            file_size = output_file.stat().st_size / 1024  # KB
-            print(f"✅ Generated {file_size:.2f} KB audio in {elapsed_time:.2f} seconds")
-            return {
-                "file": str(output_file),
-                "duration": elapsed_time,
-                "size_kb": file_size
-            }
-        else:
-            print("❌ Failed to generate audio file")
-            return None
-            
-    except Exception as e:
-        print(f"❌ TTS error: {str(e)}")
-        return None
+from tts_engine import TTSFactory
 
 def main():
     """Main function"""
@@ -111,7 +73,7 @@ def main():
         print(f"Error: Podcast script not found at {config.podcast_script}")
         return
     
-    with open(PODCAST_SCRIPT, 'r', encoding='utf-8') as f:
+    with open(config.podcast_script, 'r', encoding='utf-8') as f:
         script_text = f.read()
     
     # Extract speaking parts
@@ -146,7 +108,9 @@ def main():
                 voice = args.kynnir_voice if speaker == "KYNNIR" else args.gestur_voice
                 
                 output_file = segment_dir / f"{i:02d}_{speaker.lower()}.mp3"
-                result = test_openai_tts(text, output_file, api_key, voice)
+                result = tts_provider.generate_speech(text, output_file, voice)
+                if result:
+                    print(f"✅ Generated {output_file.name} ({result['size_kb']:.2f}KB in {result['duration']:.2f}s)")
                 
                 if result:
                     part_files.append(result)
@@ -157,8 +121,13 @@ def main():
                 "parts": part_files
             }
             
-            with open(segment_dir / "metadata.json", 'w', encoding='utf-8') as f:
-                json.dump(metadata, f, ensure_ascii=False, indent=2)
+            try:
+                with open(segment_dir / "metadata.json", 'w', encoding='utf-8') as f:
+                    json.dump(metadata, f, ensure_ascii=False, indent=2)
+            except IOError as e:
+                print(f"❌ Failed to save metadata: {str(e)}")
+            except TypeError as e:
+                print(f"❌ Invalid metadata format: {str(e)}")
             
             print(f"Generated {len(part_files)} audio files for segment {seg_idx}")
         else:
