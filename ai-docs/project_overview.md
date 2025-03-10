@@ -21,163 +21,180 @@ ai-docs/
     ├── icelandic_chat_implementation_guide.md
     ├── icelandic_voice_improvement.md
     ├── ICELANDIC_VOICE_SERVICES_README.md
-│   ├── scenarios/            # Call handling scenarios
-│   └── responses/            # AI response templates
-└── comparisons/              # Technology comparisons
+    └── [other documentation files]
 ```
-
-#### Documentation Templates
-- `calls/scenarios/city_hall_reception.md`: Example scenario for city hall reception handling
-- Other markdown files: Various documentation about voice technology implementation
 
 ### Configuration (`config/`)
 ```
 config/
-├── templates/                 # XML and other templates
-└── settings/
-    └── default_config.yaml   # Default configuration settings
+├── settings/               # System configuration
+│   ├── default_config.yaml
+│   ├── docker-compose.yml
+│   ├── Dockerfile
+│   ├── requirements.txt
+│   └── [other settings files]
+├── src/                   # Source code
+│   ├── setup/
+│   │   ├── ai_structure_config.py
+│   │   ├── config_manager.py
+│   │   └── initialize_structure.py
+│   └── utils/
+│       └── doc_migrator.py
+├── templates/             # Template files
+│   └── generate_podcast.py
+└── [comparison scripts]   # Testing and comparison scripts
+    ├── icelandic_stt_comparison.py
+    ├── icelandic_tts_comparison.py
+    └── streamlit_webui.py
 ```
-
-#### Configuration Files
-- `default_config.yaml`: Contains default settings for:
-  - Voice configuration (TTS/STT)
-  - Logging preferences
-  - System settings
 
 ### Logs (`logs/`)
 ```
 logs/
-├── voice-logs/              # Voice processing logs
-└── call-logs/              # Call handling logs
+├── call-logs/            # Call processing logs
+├── voice-logs/           # Voice processing logs
+├── claude-code-log.md    # Development logs
+└── cloudecode_log.md     # Cloud deployment logs
 ```
 
-## File Purposes
+## Component Details
 
-### Core System Files
-1. `setup-ai-structure.py`
-   - Main CLI tool
-   - Handles initialization, migration, and validation
-   - Provides command-line interface for managing documentation
+### Core Components
 
-2. `src/setup/ai_structure_config.py`
-   - Manages system configuration
-   - Handles directory structure
-   - Sets up logging
-   - Loads and validates settings
+1. **TTS Engine (`tts_engine.py`)**
+   - Main text-to-speech processing
+   - Voice synthesis configuration
+   - Audio output management
 
-3. `src/setup/initialize_structure.py`
-   - Creates initial directory structure
-   - Sets up basic documentation templates
-   - Initializes configuration files
+2. **Web Interface (`webui.py`, `icelandic_chat.html`)**
+   - User interface implementation
+   - Chat functionality
+   - Voice interaction controls
 
-4. `src/utils/doc_migrator.py`
-   - Migrates existing documentation
-   - Categorizes documents by content
-   - Creates backups before migration
-   - Handles file organization
+### Configuration Components
 
-### Documentation Files
-1. `ai-docs/calls/scenarios/*.md`
-   - Contains call handling scenarios
-   - Includes voice prompts and responses
-   - Documents integration points
-   - Provides testing procedures
+1. **Settings**
+   - `default_config.yaml`: System defaults
+   - `docker-compose.yml`: Container configuration
+   - `requirements.txt`: Dependencies
 
-2. `ai-docs/voice/tts/*.md`
-   - Text-to-Speech implementation details
-   - Voice configuration guides
-   - Performance metrics
-   - Integration instructions
+2. **Source Code**
+   - Configuration management
+   - Structure initialization
+   - Documentation migration tools
 
-3. `ai-docs/voice/stt/*.md`
-   - Speech-to-Text implementation details
-   - Recognition configuration
-   - Accuracy metrics
-   - Usage guidelines
+3. **Templates**
+   - Podcast generation
+   - Response templates
+   - Scenario templates
 
-4. `ai-docs/comparisons/*.md`
-   - Technology comparisons
-   - Performance benchmarks
-   - Feature matrices
-   - Cost analysis
+### Testing and Comparison
 
-### Configuration Files
-1. `config/settings/default_config.yaml`
-   - Default system settings
-   - Voice configuration defaults
-   - Logging preferences
-   - Path configurations
+1. **Comparison Scripts**
+   - STT comparison utilities
+   - TTS comparison tools
+   - Performance testing
 
-2. `config/templates/*`
-   - XML templates for voice systems
-   - Configuration templates
-   - Documentation templates
+2. **Development Tools**
+   - RunPod deployment scripts
+   - Azure CLI installation
+   - Sample audio processing
 
-### Log Files
-1. `logs/voice-logs/*`
-   - Voice processing logs
-   - Performance metrics
-   - Error tracking
-   - Usage statistics
+## Documentation Organization
 
-2. `logs/call-logs/*`
-   - Call handling logs
-   - Response timing
-   - Success rates
-   - Error tracking
+### Main Documentation
+Located in `ai-docs/readme/`:
+- Architecture documentation
+- Implementation guides
+- Service summaries
+- Improvement plans
 
-## System Components Interaction
+### Technical Documentation
+- Call handling scenarios
+- Response templates
+- Voice technology comparisons
+- Performance metrics
+
+## Usage Examples
+
+### Local Development
+```bash
+# Run TTS engine
+python tts_engine.py
+
+# Launch web interface
+python webui.py
+```
+
+### Docker Deployment
+```bash
+# Build and run with Docker
+docker-compose -f config/settings/docker-compose.yml up
+```
+
+### Testing
+```bash
+# Run comparison tests
+python config/icelandic_tts_comparison.py
+python config/icelandic_stt_comparison.py
+```
+
+## System Interaction Flow
 
 ```mermaid
 graph TD
-    A[setup-ai-structure.py] --> B[AI Structure Config]
-    A --> C[Initialization]
-    A --> D[Migration]
+    A[Web Interface] --> B[TTS Engine]
+    B --> C[Voice Processing]
+    C --> D[Response Generation]
+    D --> E[Audio Output]
     
-    B --> E[Directory Management]
-    B --> F[Configuration]
-    B --> G[Logging]
+    F[Configuration] --> B
+    F --> C
     
-    C --> H[Create Directories]
-    C --> I[Setup Templates]
+    G[Templates] --> D
     
-    D --> J[Categorize Docs]
-    D --> K[Organize Files]
-    D --> L[Create Backups]
+    H[Comparison Tools] --> I[Performance Metrics]
+    I --> J[Documentation]
 ```
 
 ## Key Features
-1. **Documentation Management**
-   - Organized structure for voice technology documentation
-   - Clear separation of concerns
-   - Easy navigation and maintenance
+1. **Voice Processing**
+   - Icelandic TTS capabilities
+   - Multiple voice options
+   - Quality optimization
 
-2. **Configuration System**
-   - Centralized configuration management
-   - Environment-specific settings
-   - Easy customization
+2. **Web Interface**
+   - Interactive chat
+   - Voice control
+   - Real-time processing
 
-3. **Migration Tools**
-   - Automated document organization
-   - Content-based categorization
-   - Safe migration with backups
+3. **Configuration System**
+   - Flexible settings
+   - Docker support
+   - Environment management
 
-4. **Logging System**
-   - Comprehensive logging
-   - Separate logs for different components
-   - Performance tracking
+4. **Documentation**
+   - Comprehensive guides
+   - Technical documentation
+   - Performance comparisons
 
-## Usage Examples
-1. Initialize new structure:
-   ```bash
-   python setup-ai-structure.py init
-   ```
+5. **Testing Tools**
+   - Comparison utilities
+   - Performance metrics
+   - Quality assessment
 
-2. Migrate existing docs:
-   ```bash
-   python setup-ai-structure.py migrate
-   ```
+## Deployment Options
+1. **Local Development**
+   - Direct Python execution
+   - Virtual environment support
+   - Local testing tools
 
-3. Validate structure:
-   ```bash
-   python setup-ai-structure.py validate
+2. **Docker Deployment**
+   - Containerized execution
+   - Scalable deployment
+   - Consistent environment
+
+3. **Cloud Deployment**
+   - RunPod support
+   - Azure integration
+   - Remote execution capabilities
