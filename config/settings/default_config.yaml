@@ -1,0 +1,11 @@
+logging:
+  format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+  level: INFO
+voice:
+  stt:
+    default_provider: azure
+    language: is-IS
+  tts:
+    default_provider: azure
+    speaking_rate: 1.0
+    voice_style: professional
