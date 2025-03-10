@@ -1,37 +1,26 @@
-# Project Overview - Icelandic Voice Assistant Documentation System
+# Project Overview - Icelandic Voice Assistant System
 
 ## Directory Structure and File Purposes
 
 ### Root Directory
-- `setup-ai-structure.py` - Main entry point for managing the documentation structure
-- `requirements.txt` - Python package dependencies
-- `README.md` - Project setup and usage instructions
-
-### Source Code (`src/`)
-```
-src/
-├── __init__.py                 # Package initialization
-├── setup/                      # Setup and configuration code
-│   ├── __init__.py            # Setup package initialization
-│   ├── ai_structure_config.py  # Configuration management system
-│   └── initialize_structure.py # Structure initialization logic
-└── utils/                      # Utility functions
-    ├── __init__.py            # Utils package initialization
-    └── doc_migrator.py        # Documentation migration tool
-```
-
-#### Key Source Files
-- `ai_structure_config.py`: Manages configuration settings, directory structures, and logging setup
-- `initialize_structure.py`: Creates initial directory structure and documentation templates
-- `doc_migrator.py`: Handles migration of existing documentation to new structure
+Primary application files:
+- `tts_engine.py` - Core TTS engine implementation
+- `webui.py` - Web interface implementation
+- `icelandic_chat.html` - Chat interface template
 
 ### Documentation (`ai-docs/`)
 ```
 ai-docs/
-├── voice/
-│   ├── tts/                   # Text-to-Speech documentation
-│   └── stt/                   # Speech-to-Text documentation
 ├── calls/
+│   ├── responses/            # AI response templates
+│   └── scenarios/           # Call handling scenarios
+├── comparisons/             # Technology comparison docs
+└── readme/                  # Core documentation
+    ├── ARCHITECTURE.md
+    ├── better_icelandic_voices_guide.md
+    ├── icelandic_chat_implementation_guide.md
+    ├── icelandic_voice_improvement.md
+    ├── ICELANDIC_VOICE_SERVICES_README.md
 │   ├── scenarios/            # Call handling scenarios
 │   └── responses/            # AI response templates
 └── comparisons/              # Technology comparisons

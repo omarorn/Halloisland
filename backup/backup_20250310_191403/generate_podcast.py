@@ -8,7 +8,7 @@ import re
 from pathlib import Path
 import argparse
 
-from config_manager import ConfigManager
+from src.setup.config_manager import ConfigManager
 
 # Initialize configuration
 config = ConfigManager()
