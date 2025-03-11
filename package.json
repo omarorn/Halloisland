@@ -1,0 +1,24 @@
+{
+  "name": "halloisland",
+  "version": "1.0.0",
+  "description": "Icelandic voice interaction project",
+  "scripts": {
+    "build": "echo 'No build step defined'",
+    "start": "python webui.py",
+    "test": "python -m pytest",
+    "leon:create": "leon create",
+    "leon:train": "leon train",
+    "leon:start": "leon start"
+  },
+  "dependencies": {
+    "@leon-ai/cli": "^4.0.0",
+    "@leon-ai/leon": "^1.0.0-beta.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=10.0.0"
+  }
+}
