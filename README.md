@@ -30,19 +30,19 @@ For local development without Nixpacks:
 
 2. Install dependencies:
    ```bash
-   python -m pip install --upgrade pip
-   pip install -r requirements.txt
+   python3 -m pip install --user --upgrade pip
+   python3 -m pip install --user -r requirements.txt
    npm install
    ```
 
 3. Run tests:
    ```bash
-   python -m pytest
+   python3 -m pytest
    ```
 
 4. Start the application:
    ```bash
-   python webui.py
+   python3 webui.py
    ```
 
 ### Deployment

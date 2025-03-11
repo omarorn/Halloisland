@@ -1,6 +1,7 @@
 [phases.setup]
 nixPkgs = [
   "python311",
+  "python311Packages.pip",
   "nodejs_20",
   "git",
   "ffmpeg",
@@ -9,9 +10,12 @@ nixPkgs = [
 ]
 
 [phases.install]
+aptPkgs = [
+  "python3-pip"
+]
 cmds = [
-  "python -m pip install --upgrade pip",
-  "pip install -r requirements.txt",
+  "python3 -m pip install --user --upgrade pip",
+  "python3 -m pip install --user -r requirements.txt",
   "npm install",
   "npm install -g @leon-ai/cli"
 ]
@@ -19,11 +23,12 @@ cmds = [
 [phases.build]
 cmds = [
   "npm run build",
-  "python -m pytest"
+  "python3 -m pytest"
 ]
 
 [start]
-cmd = "python webui.py"
+cmd = "python3 webui.py"
 
 [variables]
+PATH = "${PATH}:${HOME}/.local/bin"
 PYTHONPATH = "${PWD}"
