@@ -5,6 +5,7 @@
 We compared multiple TTS services with Icelandic text samples of varying lengths:
 
 ### Services Tested
+
 - **Improved Local TTS** (Optimized local implementation)
 - **OpenAI TTS** (Echo voice, tts-1 model)
 - **ElevenLabs TTS** (Aria voice)
@@ -25,7 +26,8 @@ We compared multiple TTS services with Icelandic text samples of varying lengths
 | OpenAI TTS | Podcast | 3.23s | 267.19 KB | High |
 | ElevenLabs TTS | Podcast | 4.41s | 302.45 KB | High |
 
-### Key Findings:
+### Key Findings
+
 1. **OpenAI's TTS** produces high-quality audio with moderate file sizes
 2. **ElevenLabs TTS** offers excellent quality with comparable processing times to OpenAI
 3. **Local TTS** is most efficient for basic needs with very small file sizes
@@ -36,6 +38,7 @@ We compared multiple TTS services with Icelandic text samples of varying lengths
 We tested speech recognition on a 2-minute sample of Icelandic audio:
 
 ### Services Tested
+
 - **OpenAI Whisper** (whisper-1 model)
 - **Azure Speech Services** (Failed to produce results)
 - **ElevenLabs Scribe** (Failed with API errors)
@@ -46,7 +49,8 @@ We tested speech recognition on a 2-minute sample of Icelandic audio:
 |---------|-------------|----------------|----------|
 | OpenAI Whisper | 2 minutes | 14.67s | Moderate |
 
-### Key Findings:
+### Key Findings
+
 1. **OpenAI Whisper** successfully transcribed Icelandic audio with moderate accuracy
 2. **Azure Speech Services** did not produce results, possibly due to configuration issues
 3. **ElevenLabs Scribe** failed with API errors

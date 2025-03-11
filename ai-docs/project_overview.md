@@ -3,12 +3,15 @@
 ## Directory Structure and File Purposes
 
 ### Root Directory
+
 Primary application files:
+
 - `tts_engine.py` - Core TTS engine implementation
 - `webui.py` - Web interface implementation
 - `icelandic_chat.html` - Chat interface template
 
 ### Documentation (`ai-docs/`)
+
 ```
 ai-docs/
 ├── calls/
@@ -25,6 +28,7 @@ ai-docs/
 ```
 
 ### Configuration (`config/`)
+
 ```
 config/
 ├── settings/               # System configuration
@@ -49,6 +53,7 @@ config/
 ```
 
 ### Logs (`logs/`)
+
 ```
 logs/
 ├── call-logs/            # Call processing logs
@@ -103,6 +108,7 @@ logs/
 ## Documentation Organization
 
 ### Main Documentation
+
 Located in `ai-docs/readme/`:
 - Architecture documentation
 - Implementation guides
@@ -110,6 +116,7 @@ Located in `ai-docs/readme/`:
 - Improvement plans
 
 ### Technical Documentation
+
 - Call handling scenarios
 - Response templates
 - Voice technology comparisons
@@ -118,6 +125,7 @@ Located in `ai-docs/readme/`:
 ## Usage Examples
 
 ### Local Development
+
 ```bash
 # Run TTS engine
 python tts_engine.py
@@ -127,12 +135,14 @@ python webui.py
 ```
 
 ### Docker Deployment
+
 ```bash
 # Build and run with Docker
 docker-compose -f config/settings/docker-compose.yml up
 ```
 
 ### Testing
+
 ```bash
 # Run comparison tests
 python config/icelandic_tts_comparison.py
@@ -158,6 +168,7 @@ graph TD
 ```
 
 ## Key Features
+
 1. **Voice Processing**
    - Icelandic TTS capabilities
    - Multiple voice options
@@ -184,6 +195,7 @@ graph TD
    - Quality assessment
 
 ## Deployment Options
+
 1. **Local Development**
    - Direct Python execution
    - Virtual environment support
