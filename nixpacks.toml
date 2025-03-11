@@ -2,33 +2,29 @@
 nixPkgs = [
   "python311",
   "python311Packages.pip",
-  "nodejs_20",
-  "git",
+  "python311Packages.setuptools",
   "ffmpeg",
+  "google-cloud-sdk",
   "gcc",
   "pkg-config"
 ]
 
 [phases.install]
-aptPkgs = [
-  "python3-pip"
-]
 cmds = [
   "python3 -m pip install --user --upgrade pip",
-  "python3 -m pip install --user -r requirements.txt",
-  "npm install",
-  "npm install -g @leon-ai/cli"
+  "python3 -m pip install --user -r requirements.txt"
 ]
 
 [phases.build]
 cmds = [
-  "npm run build",
   "python3 -m pytest"
 ]
 
 [start]
-cmd = "python3 webui.py"
+cmd = "python3 -m uvicorn app.main:app --host 0.0.0.0 --port $PORT"
 
 [variables]
+PORT = "8000"
+PYTHONUNBUFFERED = "1"
 PATH = "${PATH}:${HOME}/.local/bin"
 PYTHONPATH = "${PWD}"

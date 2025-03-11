@@ -1,0 +1,33 @@
+{
+  "builds": [
+    {
+      "src": "app/main.py",
+      "use": "@nixpacks/vercel-builder",
+      "config": {
+        "nixpacksPlan": {
+          "phases": {
+            "setup": {
+              "nixPkgs": [
+                "python311", 
+                "python311Packages.pip",
+                "ffmpeg",
+                "google-cloud-sdk"
+              ]
+            },
+            "install": {
+              "cmds": [
+                "python3 -m pip install --user -r requirements.txt"
+              ]
+            }
+          }
+        }
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/tts",
+      "dest": "/app/main.py"
+    }
+  ]
+}
