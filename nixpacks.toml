@@ -1,32 +1,37 @@
+[build]
+builder = "nixpacks"
+
 [phases.setup]
 nixPkgs = [
   "python311",
   "nodejs_20",
-  "npm",
   "git",
   "ffmpeg",
-  "nodejs",
   "gcc",
-  "pkg-config"
+  "pkg-config",
+  "python311Packages.pip",
+  "python311Packages.virtualenv"
 ]
 
 [phases.install]
 cmds = [
-  "python -m pip install --upgrade pip",
-  "pip install -r requirements.txt",
-  "npm install -g @leon-ai/cli",
-  "npm install"
+  "python -m virtualenv .venv",
+  ".venv/bin/pip install --upgrade pip",
+  ".venv/bin/pip install -r requirements.txt",
+  "npm install",
+  "npm install -g @leon-ai/cli"
 ]
 
 [phases.build]
 cmds = [
-  "npm run build"
+  "npm run build",
+  ".venv/bin/python -m pytest"
 ]
 
 [start]
-cmd = "python webui.py"
+cmd = ".venv/bin/python webui.py"
 
 [variables]
-PYTHON_VERSION = "3.11.7"
-NODE_VERSION = "20.x"
-NPM_VERSION = "10.x"
+PYTHONPATH = "${PYTHONPATH}:${PWD}"
+VIRTUAL_ENV = "${PWD}/.venv"
+PATH = "${VIRTUAL_ENV}/bin:${PATH}"
