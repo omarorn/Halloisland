@@ -3,9 +3,6 @@
 ## Deployment and Development
 
 ### Prerequisites
-- Python 3.11 or higher
-- Node.js 20.x or higher
-- npm 10.x or higher
 - Git
 
 ### Quick Start
@@ -15,26 +12,25 @@
    cd Halloisland
    ```
 
+2. Install Nixpacks:
+   ```bash
+   curl -sSL https://nixpacks.com/install.sh | bash
+   ```
+
+3. Build and run:
+   ```bash
+   nixpacks build . --name halloisland
+   nixpacks run .
+   ```
+
+### Development
+For local development without Nixpacks:
+
+1. Install Python 3.11 and Node.js 20.x
+
 2. Install dependencies:
    ```bash
-   pip install -r requirements.txt
-   npm install
-   ```
-
-3. Run the application:
-   ```bash
-   python webui.py
-   ```
-
-### Development Setup
-1. Set up virtual environment:
-   ```bash
-   python -m venv .venv
-   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-   ```
-
-2. Install development dependencies:
-   ```bash
+   python -m pip install --upgrade pip
    pip install -r requirements.txt
    npm install
    ```
@@ -44,21 +40,22 @@
    python -m pytest
    ```
 
-### Deployment with Nixpacks
-This project uses Nixpacks for automated builds and deployments. To deploy:
-
-1. Install Nixpacks:
+4. Start the application:
    ```bash
-   curl -sSL https://nixpacks.com/install.sh | bash
+   python webui.py
    ```
 
-2. Build the project:
+### Deployment
+The project uses GitHub Actions for automated deployment:
+
+1. Push to main branch triggers:
+   - Automatic testing
+   - Nixpacks build
+   - Deployment (if configured)
+
+2. Manual deployment:
    ```bash
    nixpacks build . --name halloisland
-   ```
-
-3. Test the build:
-   ```bash
    nixpacks run .
    ```
 

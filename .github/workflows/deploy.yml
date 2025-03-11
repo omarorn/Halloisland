@@ -1,9 +1,12 @@
-name: Deploy
+name: Build and Deploy
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+
+permissions:
+  contents: read
 
 jobs:
   test:
@@ -17,14 +20,21 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
           
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          npm install
+          npm install -g @leon-ai/cli
           
       - name: Run tests
-        run: |
-          python -m pytest
+        run: python -m pytest
           
   build:
     needs: test
@@ -37,15 +47,9 @@ jobs:
         run: curl -sSL https://nixpacks.com/install.sh | bash
       
       - name: Build with Nixpacks
-        run: nixpacks build . --name halloisland
-        
-      # Add your deployment steps here
-      # For example, if deploying to a cloud platform:
-      # - name: Deploy to Platform
-      #   run: |
-      #     # Add deployment commands
-      #   env:
-      #     PLATFORM_TOKEN: ${{ secrets.PLATFORM_TOKEN }}
-
-permissions:
-  contents: read
+        run: |
+          nixpacks build . --name halloisland
+          
+      - name: Verify build
+        run: |
+          nixpacks run . --skip-build --cmd "python -m pytest"
