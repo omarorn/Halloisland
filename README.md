@@ -1,5 +1,76 @@
 # Project Overview - Icelandic Voice Assistant Documentation System
 
+## Deployment and Development
+
+### Prerequisites
+- Python 3.11 or higher
+- Node.js 20.x or higher
+- npm 10.x or higher
+- Git
+
+### Quick Start
+1. Clone the repository:
+   ```bash
+   git clone [repository-url]
+   cd Halloisland
+   ```
+
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   npm install
+   ```
+
+3. Run the application:
+   ```bash
+   python webui.py
+   ```
+
+### Development Setup
+1. Set up virtual environment:
+   ```bash
+   python -m venv .venv
+   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+   ```
+
+2. Install development dependencies:
+   ```bash
+   pip install -r requirements.txt
+   npm install
+   ```
+
+3. Run tests:
+   ```bash
+   python -m pytest
+   ```
+
+### Deployment with Nixpacks
+This project uses Nixpacks for automated builds and deployments. To deploy:
+
+1. Install Nixpacks:
+   ```bash
+   curl -sSL https://nixpacks.com/install.sh | bash
+   ```
+
+2. Build the project:
+   ```bash
+   nixpacks build . --name halloisland
+   ```
+
+3. Test the build:
+   ```bash
+   nixpacks run .
+   ```
+
+The project is configured for automatic deployment through GitHub Actions when pushing to the main branch.
+
+### Environment Variables
+Create a `.env` file with:
+```
+OPENAI_API_KEY=your_key_here
+# Add other required API keys
+```
+
 ## Directory Structure and File Purposes
 
 ### Root Directory
