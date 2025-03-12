@@ -56,7 +56,7 @@ st.title("AI Agent Web Interface")
 
 # Display chat messages
 for message in st.session_state.messages:
-    if message["role"] \!= "system":
+    if message["role"] != "system":
         with st.chat_message(message["role"]):
             st.write(message["content"])
 
