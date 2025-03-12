@@ -62,4 +62,4 @@ def webui_interface():
 
 if __name__ == "__main__":
     demo = webui_interface()
-    demo.launch(share=True)
+    demo.launch(share=True, pwa=True)

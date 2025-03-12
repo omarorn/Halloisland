@@ -9,7 +9,8 @@ nixPkgs = [
   "git",
   "gcc",
   "pkg-config",
-  "openssl"
+  "openssl",
+  "procps"
 ]
 
 [phases.install]
