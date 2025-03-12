@@ -49,7 +49,7 @@ def webui_interface():
         gr.Markdown("# AI Agent Interface")
         gr.Markdown("## Chat with the AI")
         
-        chatbot = gr.Chatbot(height=600)
+        chatbot = gr.Chatbot(height=600, type="messages")
         msg = gr.Textbox(label="Type your message")
         clear = gr.Button("Clear")
         
