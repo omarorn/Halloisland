@@ -4,27 +4,26 @@ nixPkgs = [
   "python311Packages.pip",
   "python311Packages.setuptools",
   "ffmpeg",
-  "google-cloud-sdk",
+  "nodejs",
+  "npm",
+  "git",
   "gcc",
-  "pkg-config"
+  "pkg-config",
+  "openssl"
 ]
 
 [phases.install]
 cmds = [
   "python3 -m pip install --user --upgrade pip",
-  "python3 -m pip install --user -r requirements.txt"
-]
-
-[phases.build]
-cmds = [
-  "python3 -m pytest"
+  "python3 -m pip install --user -r requirements.txt",
+  "chmod +x master-setup-script.sh",
+  "./master-setup-script.sh"
 ]
 
 [start]
-cmd = "python3 -m uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+cmd = "python3 webui.py"
 
 [variables]
-PORT = "8000"
 PYTHONUNBUFFERED = "1"
 PATH = "${PATH}:${HOME}/.local/bin"
 PYTHONPATH = "${PWD}"
