@@ -6,8 +6,8 @@
     "npm": ">=9.0.0"
   },
   "scripts": {
-    "start": "streamlit run app.py",
-    "dev": "streamlit run app.py",
+    "start": "python webui.py",
+    "dev": "python webui.py",
     "build": "chmod +x master-setup-script.sh && ./master-setup-script.sh"
   }
 }
