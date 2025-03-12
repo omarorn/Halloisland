@@ -9,18 +9,17 @@ load_dotenv()
 api_key = os.getenv("OPENAI_API_KEY", "")
 
 def chat_with_openai(message, history):
-    history = history or []
     if not api_key:
-        return "Please set your OpenAI API key in the .env file"
+        return [], "Please set your OpenAI API key in the .env file"
     
     # Prepare conversation history for OpenAI API
     messages = [{"role": "system", "content": "You are a helpful assistant."}]
     
-    for h in history:
-        messages.append({"role": "user", "content": h[0]})
-        if h[1]:
-            messages.append({"role": "assistant", "content": h[1]})
+    # Convert Gradio messages format to OpenAI format
+    for msg in history:
+        messages.append({"role": msg[0], "content": msg[1]})
     
+    # Add current message
     messages.append({"role": "user", "content": message})
     
     # Make API request to OpenAI
@@ -32,16 +31,19 @@ def chat_with_openai(message, history):
                 "Content-Type": "application/json"
             },
             json={
-                "model": "gpt-4o",
+                "model": "gpt-3.5-turbo",
                 "messages": messages
             }
         )
         response.raise_for_status()
         
         # Extract the assistant's reply
-        return response.json()["choices"][0]["message"]["content"]
+        assistant_message = response.json()["choices"][0]["message"]["content"]
+        history.append(("user", message))
+        history.append(("assistant", assistant_message))
+        return history, ""
     except Exception as e:
-        return f"Error: {str(e)}"
+        return history, f"Error: {str(e)}"
 
 def webui_interface():
     # Create Gradio interface
@@ -53,8 +55,8 @@ def webui_interface():
         msg = gr.Textbox(label="Type your message")
         clear = gr.Button("Clear")
         
-        msg.submit(chat_with_openai, [msg, chatbot], [chatbot])
-        clear.click(lambda: None, None, chatbot, queue=False)
+        msg.submit(chat_with_openai, [msg, chatbot], [chatbot, msg])
+        clear.click(lambda: ([], ""), None, [chatbot, msg], queue=False)
         
     return demo
 
