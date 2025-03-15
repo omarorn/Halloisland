@@ -1,262 +1,89 @@
-# Project Overview - Icelandic Voice Assistant Documentation System
+# Halloisland Open WebUI Integration
 
-## Deployment and Development
+Integration of Icelandic TTS/STT capabilities with Open WebUI using FastAPI and Docker.
 
-### Prerequisites
-- Git
+## Components
 
-### Quick Start
+- **FastAPI Service**: Handles TTS/STT requests `/api/tts` and `/api/stt`
+- **Open WebUI**: User interface for chat and voice interactions
+- **Redis**: Caching layer for audio files
+- **PostgreSQL**: Chat history and session storage
+
+## Quick Start
+
 1. Clone the repository:
-   ```bash
-   git clone [repository-url]
-   cd Halloisland
-   ```
-
-2. Install Nixpacks:
-   ```bash
-   curl -sSL https://nixpacks.com/install.sh | bash
-   ```
-
-3. Build and run:
-   ```bash
-   nixpacks build . --name halloisland
-   nixpacks run .
-   ```
-
-### Development
-For local development without Nixpacks:
-
-1. Install Python 3.11 and Node.js 20.x
-
-2. Install dependencies:
-   ```bash
-   python3 -m pip install --user --upgrade pip
-   python3 -m pip install --user -r requirements.txt
-   npm install
-   ```
-
-3. Run tests:
-   ```bash
-   python3 -m pytest
-   ```
-
-4. Start the application:
-   ```bash
-   python3 webui.py
-   ```
-
-### Deployment
-The project uses GitHub Actions for automated deployment:
-
-1. Push to main branch triggers:
-   - Automatic testing
-   - Nixpacks build
-   - Deployment (if configured)
-
-2. Manual deployment:
-   ```bash
-   nixpacks build . --name halloisland
-   nixpacks run .
-   ```
-
-The project is configured for automatic deployment through GitHub Actions when pushing to the main branch.
-
-### Environment Variables
-Create a `.env` file with:
-```
-OPENAI_API_KEY=your_key_here
-# Add other required API keys
+```bash
+git clone [your-repo-url]
+cd halloisland
 ```
 
-## Directory Structure and File Purposes
-
-### Root Directory
-- `setup-ai-structure.py` - Main entry point for managing the documentation structure
-- `requirements.txt` - Python package dependencies
-- `README.md` - Project setup and usage instructions
-
-### Source Code (`src/`)
-```
-src/
-├── __init__.py                 # Package initialization
-├── setup/                      # Setup and configuration code
-│   ├── __init__.py            # Setup package initialization
-│   ├── ai_structure_config.py  # Configuration management system
-│   └── initialize_structure.py # Structure initialization logic
-└── utils/                      # Utility functions
-    ├── __init__.py            # Utils package initialization
-    └── doc_migrator.py        # Documentation migration tool
+2. Set up environment variables:
+```bash
+cp .env.example .env
+# Edit .env with your OpenAI API key
 ```
 
-#### Key Source Files
-- `ai_structure_config.py`: Manages configuration settings, directory structures, and logging setup
-- `initialize_structure.py`: Creates initial directory structure and documentation templates
-- `doc_migrator.py`: Handles migration of existing documentation to new structure
-
-### Documentation (`ai-docs/`)
-```
-ai-docs/
-├── voice/
-│   ├── tts/                   # Text-to-Speech documentation
-│   └── stt/                   # Speech-to-Text documentation
-├── calls/
-│   ├── scenarios/            # Call handling scenarios
-│   └── responses/            # AI response templates
-└── comparisons/              # Technology comparisons
+3. Start with Docker:
+```bash
+docker-compose up -d
 ```
 
-#### Documentation Templates
-- `calls/scenarios/city_hall_reception.md`: Example scenario for city hall reception handling
-- Other markdown files: Various documentation about voice technology implementation
-
-### Configuration (`config/`)
-```
-config/
-├── templates/                 # XML and other templates
-└── settings/
-    └── default_config.yaml   # Default configuration settings
+4. Test the setup:
+```bash
+chmod +x test_setup.sh
+./test_setup.sh
 ```
 
-#### Configuration Files
-- `default_config.yaml`: Contains default settings for:
-  - Voice configuration (TTS/STT)
-  - Logging preferences
-  - System settings
+5. Access services:
+- Open WebUI: http://localhost:3000
+- API Docs: http://localhost:8000/docs
 
-### Logs (`logs/`)
+## Project Structure
+
 ```
-logs/
-├── voice-logs/              # Voice processing logs
-└── call-logs/              # Call handling logs
+.
+├── api.py           # FastAPI application
+├── tts_engine.py    # TTS implementation
+├── docker-compose.yml
+├── Dockerfile
+├── requirements.txt
+└── OPENWEBUI_SETUP.md
 ```
 
-## File Purposes
+## Railway Deployment
 
-### Core System Files
-1. `setup-ai-structure.py`
-   - Main CLI tool
-   - Handles initialization, migration, and validation
-   - Provides command-line interface for managing documentation
+See [OPENWEBUI_SETUP.md](OPENWEBUI_SETUP.md) for detailed Railway deployment instructions.
 
-2. `src/setup/ai_structure_config.py`
-   - Manages system configuration
-   - Handles directory structure
-   - Sets up logging
-   - Loads and validates settings
+## Testing
 
-3. `src/setup/initialize_structure.py`
-   - Creates initial directory structure
-   - Sets up basic documentation templates
-   - Initializes configuration files
+1. Test TTS endpoint:
+```bash
+curl -X POST "http://localhost:8000/api/tts" \
+     -H "Content-Type: application/json" \
+     -d '{"text":"Halló Ísland", "voice":"alloy"}' \
+     --output test.mp3
+```
 
-4. `src/utils/doc_migrator.py`
-   - Migrates existing documentation
-   - Categorizes documents by content
-   - Creates backups before migration
-   - Handles file organization
+2. View API documentation:
+```bash
+open http://localhost:8000/docs
+```
 
-### Documentation Files
-1. `ai-docs/calls/scenarios/*.md`
-   - Contains call handling scenarios
-   - Includes voice prompts and responses
-   - Documents integration points
-   - Provides testing procedures
-
-2. `ai-docs/voice/tts/*.md`
-   - Text-to-Speech implementation details
-   - Voice configuration guides
-   - Performance metrics
-   - Integration instructions
-
-3. `ai-docs/voice/stt/*.md`
-   - Speech-to-Text implementation details
-   - Recognition configuration
-   - Accuracy metrics
-   - Usage guidelines
-
-4. `ai-docs/comparisons/*.md`
-   - Technology comparisons
-   - Performance benchmarks
-   - Feature matrices
-   - Cost analysis
-
-### Configuration Files
-1. `config/settings/default_config.yaml`
-   - Default system settings
-   - Voice configuration defaults
-   - Logging preferences
-   - Path configurations
-
-2. `config/templates/*`
-   - XML templates for voice systems
-   - Configuration templates
-   - Documentation templates
-
-### Log Files
-1. `logs/voice-logs/*`
-   - Voice processing logs
-   - Performance metrics
-   - Error tracking
-   - Usage statistics
-
-2. `logs/call-logs/*`
-   - Call handling logs
-   - Response timing
-   - Success rates
-   - Error tracking
-
-## System Components Interaction
+## Architecture
 
 ```mermaid
 graph TD
-    A[setup-ai-structure.py] --> B[AI Structure Config]
-    A --> C[Initialization]
-    A --> D[Migration]
-    
-    B --> E[Directory Management]
-    B --> F[Configuration]
-    B --> G[Logging]
-    
-    C --> H[Create Directories]
-    C --> I[Setup Templates]
-    
-    D --> J[Categorize Docs]
-    D --> K[Organize Files]
-    D --> L[Create Backups]
+    A[Open WebUI] --> B{FastAPI Service}
+    B --> C[TTS Engine]
+    B --> D[Redis Cache]
+    B --> E[PostgreSQL]
+    C --> F[OpenAI API]
 ```
 
-## Key Features
-1. **Documentation Management**
-   - Organized structure for voice technology documentation
-   - Clear separation of concerns
-   - Easy navigation and maintenance
+## License
 
-2. **Configuration System**
-   - Centralized configuration management
-   - Environment-specific settings
-   - Easy customization
+MIT
 
-3. **Migration Tools**
-   - Automated document organization
-   - Content-based categorization
-   - Safe migration with backups
+## Contributing
 
-4. **Logging System**
-   - Comprehensive logging
-   - Separate logs for different components
-   - Performance tracking
-
-## Usage Examples
-1. Initialize new structure:
-   ```bash
-   python setup-ai-structure.py init
-   ```
-
-2. Migrate existing docs:
-   ```bash
-   python setup-ai-structure.py migrate
-   ```
-
-3. Validate structure:
-   ```bash
-   python setup-ai-structure.py validate
+See [ai-docs/README-contributing.md](ai-docs/README-contributing.md) for contribution guidelines.

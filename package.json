@@ -11,3 +11,4 @@
     "build": "chmod +x master-setup-script.sh && ./master-setup-script.sh"
   }
 }
+

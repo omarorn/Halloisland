@@ -2,8 +2,16 @@ import gradio as gr
 import requests
 import os
 from dotenv import load_dotenv
+import redis
+import hashlib
 
+# Initialize Redis connection
 load_dotenv()
+redis_client = redis.Redis.from_url(
+    os.getenv("REDIS_URL", "redis://localhost:6379/0"),
+    decode_responses=False  # Keep audio data as bytes
+)
+CACHE_TTL = 86400  # 24 hours cache retention
 
 # Get API key from environment variables
 api_key = os.getenv("OPENAI_API_KEY", "")

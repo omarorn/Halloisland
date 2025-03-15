@@ -22,7 +22,7 @@ cmds = [
 ]
 
 [start]
-cmd = "python3 webui.py"
+cmd = "python3 api.py"
 
 [variables]
 PYTHONUNBUFFERED = "1"
