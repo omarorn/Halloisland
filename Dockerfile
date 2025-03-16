@@ -21,8 +21,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install --no-cache-dir -r requirements_icelandic.txt
 RUN pip install -e .
 
-# Expose the port the app runs on
-EXPOSE 8000
+# Expose port 80 for Railway deployment
+EXPOSE 80
 
 # Command to run the application
 CMD ["python", "api.py"]
