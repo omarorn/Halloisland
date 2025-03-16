@@ -1,13 +1,19 @@
-FROM python:3.11-slim
+FROM python:3.11.5-slim-bullseye
 
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    curl \
-    software-properties-common \
-    && rm -rf /var/lib/apt/lists/*
+# Install system dependencies with retry mechanism
+RUN for i in $(seq 1 3); do \
+        (apt-get update -y && \
+         apt-get install -y --no-install-recommends \
+            build-essential \
+            curl \
+            software-properties-common && \
+         apt-get clean && \
+         rm -rf /var/lib/apt/lists/*) && break || \
+        if [ $i -eq 3 ]; then exit 1; fi; \
+        sleep 1; \
+    done
 
 # Copy requirements first to leverage Docker cache
 COPY requirements.txt .
