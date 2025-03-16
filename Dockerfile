@@ -13,12 +13,13 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt .
 COPY requirements_icelandic.txt .
 
+# Copy application code first
+COPY . .
+
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install --no-cache-dir -r requirements_icelandic.txt
-
-# Copy application code
-COPY . .
+RUN pip install -e .
 
 # Expose the port the app runs on
 EXPOSE 8000
